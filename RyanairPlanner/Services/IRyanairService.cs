@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using RyanairPlanner.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RyanairPlanner.Services
 {
     public interface IRyanairService
     {
-        string getAirports();
+        List<AirportModel> getAirports();
+
+        string getRoutesFromAirport(string iataCode);
     }
 }

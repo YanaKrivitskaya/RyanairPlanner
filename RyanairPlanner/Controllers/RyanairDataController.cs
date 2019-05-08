@@ -19,19 +19,25 @@ namespace RyanairPlanner.Controllers
             _ryanairService = ryanairService;
         }
 
-        // GET: api/<controller>
+        // GET: api/ryanair/airports
         [HttpGet]
+        [Route("airports")]
         public IActionResult GetAirports()
         {
             var data = _ryanairService.getAirports();
-            return Ok(data);
+            var res = Json(data).Value; 
+
+            return Ok(res);
         }
 
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/ryanair/routes/VNO
+        [HttpGet]
+        [Route("routes/{iataCode}")]
+        public IActionResult Get(string iataCode)
         {
-            return "value";
+            var data = _ryanairService.getRoutesFromAirport(iataCode);
+
+            return Ok(data);
         }
 
         // POST api/<controller>
