@@ -30,11 +30,24 @@
   <ItemGroup>
     <None Remove="ClientApp\src\app\airport.model.ts" />
     <None Remove="ClientApp\src\app\app.service.ts" />
+    <None Remove="ClientApp\src\app\Components\admin.component.ts" />
+    <None Remove="ClientApp\src\app\Components\home.component.ts" />
+    <None Remove="ClientApp\src\app\Models\updateResponse.model.ts" />
+    <None Remove="ClientApp\src\app\Services\home.service.ts" />
+    <None Remove="ClientApp\src\app\Views\home.component.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\app\airport.model.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Components\admin.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Components\home.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Models\airport.model.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\app.service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Models\updateResponse.model.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Views\home.component.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ClientApp\src\app\Services\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

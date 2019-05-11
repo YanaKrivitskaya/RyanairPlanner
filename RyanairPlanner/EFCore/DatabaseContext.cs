@@ -11,6 +11,8 @@ namespace RyanairPlanner.EFCore
     {
         public DbSet<AirportModel> Airports { get; set; }
 
+        public DbSet<RouteModel> Routes { get; set; }
+
         public DatabaseContext (DbContextOptions<DatabaseContext> options)
             :base(options)
         {

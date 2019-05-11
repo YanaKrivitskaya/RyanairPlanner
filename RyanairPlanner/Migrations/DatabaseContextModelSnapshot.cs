@@ -20,8 +20,9 @@ namespace RyanairPlanner.Migrations
 
             modelBuilder.Entity("RyanairPlanner.Models.AirportModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Base");
 
@@ -48,6 +49,33 @@ namespace RyanairPlanner.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Airports");
+                });
+
+            modelBuilder.Entity("RyanairPlanner.Models.RouteModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AirportFrom");
+
+                    b.Property<string>("AirportTo");
+
+                    b.Property<string>("CarrierCode");
+
+                    b.Property<string>("ConnectingAirport");
+
+                    b.Property<string>("Group");
+
+                    b.Property<bool>("NewRoute");
+
+                    b.Property<string>("Operator");
+
+                    b.Property<bool>("SeasonalRoute");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Routes");
                 });
 #pragma warning restore 612, 618
         }
