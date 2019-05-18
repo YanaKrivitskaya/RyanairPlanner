@@ -28,9 +28,9 @@ namespace RyanairPlanner
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = AppConfiguration.GetConnectionString("DefaultConnection");
+            string connection = AppConfiguration.GetConnectionString("PostgreSQLConnection");
 
-            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(connection));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddTransient<IRyanairService, RyanairService>();

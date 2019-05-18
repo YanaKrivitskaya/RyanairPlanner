@@ -22,48 +22,36 @@ namespace RyanairPlanner.Controllers
             _ryanairRepository = new RyanairRepository(ctx);
         }
 
-        // GET: api/ryanair/update
+        // GET: api/ryanair/routes/update
         [HttpGet]
-        [Route("update")]
-        public async Task<IActionResult> UpdateData()
+        [Route("routes/update")]
+        public async Task<IActionResult> UpdateRoutes()
         {
-            var res = "";
+            var routes = _ryanairService.getRoutes();
+            var response = await _ryanairRepository.UpdateRoutes(routes);                      
 
+            return Ok(response);
+        }
+
+        // GET: api/ryanair/airports/update
+        [HttpGet]
+        [Route("airports/update")]
+        public async Task<IActionResult> UpdateAirports()
+        {
             var airports = _ryanairService.getAirports();
             var response = await _ryanairRepository.UpdateAirports(airports);
 
-            if(response.ResponseMessage == "Ok")
-            {
-                res = "Airports updated. Rows affected: " + response.RowsAffected + ". ";
-            }
-            else
-            {
-                res = response.ResponseMessage + ". ";
-            }        
-
-            var routes = _ryanairService.getRoutes();
-            response = await _ryanairRepository.UpdateRoutes(routes);
-
-            if (response.ResponseMessage == "Ok")
-            {
-                res += "Routes updated. Rows affcted: " + response.RowsAffected + ". ";
-            }
-            else
-            {
-                res += response.ResponseMessage;
-            }
-
-            return Ok(res);
+            return Ok(response);
         }
 
         // GET: api/ryanair/routes
         [HttpGet]
-        [Route("routes")]
-        public async Task<IActionResult> GetRoutes()
+        [Route("routes/{fromAirport}/{toAirport}")]
+        public async Task<IActionResult> GetRoutes(string fromAirport, string toAirport)
         {
-            var data = _ryanairService.getRoutes();
+            //var data = _ryanairService.getRoutes();
 
-            var response = await _ryanairRepository.UpdateRoutes(data);
+            var response =  _ryanairRepository.getRoutes(fromAirport, toAirport);
             
             return Ok(response);
         }

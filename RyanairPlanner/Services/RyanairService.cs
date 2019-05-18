@@ -36,6 +36,17 @@ namespace RyanairPlanner.Services
             return res;
         }
 
+        //Returns list of all available countries
+        public string getCountries()
+        {
+            var client = new RestClient("http://apigateway.ryanair.com/pub/v1/core/3/countries");
+
+            IRestResponse response = client.Execute(request);
+
+            var res = response.Content;
+
+            return "OK";
+        }
 
         //Returns list of all active routes from the airport given by its three-letter IATA code
         public string getRoutesFromAirport(string iataCode)
