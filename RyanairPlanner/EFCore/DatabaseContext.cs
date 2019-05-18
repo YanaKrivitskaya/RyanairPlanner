@@ -11,10 +11,14 @@ namespace RyanairPlanner.EFCore
     {
         public DbSet<AirportModel> Airports { get; set; }
 
+        public DbSet<RouteModel> Routes { get; set; }
+
+        public DbSet<UpdatesHistoryModel> UpdatesHistory { get; set; }
+
         public DatabaseContext (DbContextOptions<DatabaseContext> options)
             :base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
     }
 }
