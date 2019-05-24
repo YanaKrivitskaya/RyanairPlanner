@@ -44,31 +44,63 @@ namespace RyanairPlanner.Controllers
             return Ok(response);
         }
 
+        // GET: api/ryanair/airports/VNO
+        [HttpGet]
+        [Route("airports/{fromAirport}")]
+        public async Task<IActionResult> GetDirectAirports(string fromAirport)
+        {
+            var airports = _ryanairRepository.getDirectAirports(fromAirport);
+
+            return Ok(airports);
+        }
+
         // GET: api/ryanair/routes
         [HttpGet]
-        [Route("routes/{fromAirport}/{toAirport}")]
-        public async Task<IActionResult> GetRoutes(string fromAirport, string toAirport)
+        [Route("routes/{fromAirport}/{toAirport}/{fromDate}/{toDate}")]
+        public async Task<IActionResult> GetDirectRoutes(string fromAirport, string toAirport, DateTime fromDate, DateTime toDate)
         {
             //var data = _ryanairService.getRoutes();
 
-            var response =  _ryanairRepository.getRoutes(fromAirport, toAirport);
-            
+            var response =  _ryanairRepository.getDirectRoutes(fromAirport, toAirport);
+
+            var res = _ryanairService.getCheapest(fromAirport, toAirport, fromDate, toDate);
+
+            return Ok(response);
+        }
+
+        // GET: api/ryanair/routes
+        [HttpGet]
+        [Route("routes/{fromAirport}/{toAirport}/{oneStop}")]
+        public async Task<IActionResult> GetRoutes(string fromAirport, string toAirport, int oneStop)
+        {
+            //var data = _ryanairService.getRoutes();
+
+            var response = _ryanairRepository.getRoutes(fromAirport, toAirport, 1);
+
             return Ok(response);
         }
 
         // GET: api/ryanair/airports
         [HttpGet]
         [Route("airports")]
-        public async Task<IActionResult> GetAirports()
+        public IActionResult GetAirports()
         {
-            //var airports = _ryanairService.getAirports();
-
-            //var response = await _ryanairRepository.UpdateAirports(airports);
-
             var response = _ryanairRepository.getAirports();
 
             return Ok(response);
         }
+
+        // GET: api/ryanair/updateddate
+        [HttpGet]
+        [Route("updateddate")]
+        public IActionResult GetUpdatedDate()
+        {
+            var response = _ryanairRepository.getUpdatedDate();
+
+            return Ok(response);
+        }
+
+
 
         // GET api/ryanair/routes/VNO
         [HttpGet]
@@ -112,13 +144,5 @@ namespace RyanairPlanner.Controllers
         {
         }
 
-        public class UpdateResponseModel
-        {
-            public int AirportsAffected { get; set; }
-
-            public int RoutesAffected { get; set; }
-
-            public string ResponseMessage { get; set; }            
-        }
     }
 }

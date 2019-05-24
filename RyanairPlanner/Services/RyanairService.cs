@@ -153,5 +153,41 @@ namespace RyanairPlanner.Services
 
         #endregion
 
+        #region Farefinder API
+
+        //Returns sorted list (ascending) of one way fares for given filter parameters
+        public string getCheapest(string depIata, string arrivIata, DateTime depDate1, DateTime depDate2)
+        {
+            var client = new RestClient(String.Format("https://services-api.ryanair.com/farfnd/3/oneWayFares", depIata, arrivIata));
+
+            request.AddParameter("departureAirportIataCode", depIata);
+            request.AddParameter("arrivalAirportIataCode", arrivIata);
+            request.AddParameter("outboundDepartureDateFrom", depDate1.ToString("yyyy-MM-dd"));
+            request.AddParameter("outboundDepartureDateTo", depDate2.ToString("yyyy-MM-dd"));
+
+            IRestResponse response = client.Execute(request);
+
+            var res = response.Content;
+
+            return res;
+        }
+
+        //Returns sorted list (ascending) of one way fares for given filter parameters per day.
+        public string getCheapestPerDay(string depIata, string arrivIata, DateTime depDate1, DateTime depDate2)
+        {
+            var client = new RestClient(String.Format("https://services-api.ryanair.com/farfnd/3/oneWayFares/{0}/{1}/cheapestPerDay", depIata, arrivIata));
+
+            //request.AddParameter("outboundWeekOfDate", depDate1.ToString("yyyy-MM-dd"));
+            request.AddParameter("outboundMonthOfDate", depDate1.ToString("yyyy-MM-dd"));
+
+            IRestResponse response = client.Execute(request);
+
+            var res = response.Content;
+
+            return res;
+        }
+
+        #endregion
+
     }
 }
