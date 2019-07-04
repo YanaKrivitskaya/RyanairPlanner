@@ -130,6 +130,7 @@ namespace RyanairPlanner.EFCore
             if (route != null)
             {
                 var directRoute = ConvertToDirectRoute(route);
+                return directRoute;
             }
             
             return null;

@@ -32,8 +32,11 @@
     <None Remove="ClientApp\src\app\airport.model.ts" />
     <None Remove="ClientApp\src\app\app.service.ts" />
     <None Remove="ClientApp\src\app\Components\admin.component.ts" />
+    <None Remove="ClientApp\src\app\Components\calendar.component.ts" />
     <None Remove="ClientApp\src\app\Components\datamanage.component.ts" />
     <None Remove="ClientApp\src\app\Components\home.component.ts" />
+    <None Remove="ClientApp\src\app\Models\monthSchedule.model.ts" />
+    <None Remove="ClientApp\src\app\Models\price.model.ts" />
     <None Remove="ClientApp\src\app\Models\route.model.ts" />
     <None Remove="ClientApp\src\app\Models\stops.model.ts" />
     <None Remove="ClientApp\src\app\Models\updateResponse.model.ts" />
@@ -44,10 +47,13 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\Components\admin.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Components\calendar.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Components\datamanage.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Components\home.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\airport.model.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\app.service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Models\monthSchedule.model.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\Models\price.model.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\route.model.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\stops.model.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\Models\updateResponse.model.ts" />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RyanairPlanner.EFCore;
+using RyanairPlanner.Models;
 using RyanairPlanner.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,11 +16,13 @@ namespace RyanairPlanner.Controllers
     {
         private IRyanairService _ryanairService;
         private RyanairRepository _ryanairRepository;
+        private readonly CustomConverter _converter;
 
         public RyanairDataController(IRyanairService ryanairService, DatabaseContext ctx)
         {
             _ryanairService = ryanairService;
             _ryanairRepository = new RyanairRepository(ctx);
+            _converter = new CustomConverter();
         }
 
         // GET: api/ryanair/routes/update
@@ -57,15 +60,28 @@ namespace RyanairPlanner.Controllers
         // GET: api/ryanair/routes
         [HttpGet]
         [Route("routes/{fromAirport}/{toAirport}/{fromDate}/{toDate}")]
-        public async Task<IActionResult> GetDirectRoutes(string fromAirport, string toAirport, DateTime fromDate, DateTime toDate)
-        {
-            //var data = _ryanairService.getRoutes();
+        public IActionResult GetDirectRoutes(string fromAirport, string toAirport, DateTime? fromDate, DateTime? toDate)
+        {          
+            var route =  _ryanairRepository.getDirectRoutes(fromAirport, toAirport);
 
-            var response =  _ryanairRepository.getDirectRoutes(fromAirport, toAirport);
+            //List<DateTime> globalSchedule = _ryanairService.getScheduleAvailability(fromAirport, toAirport);
 
-            var res = _ryanairService.getCheapest(fromAirport, toAirport, fromDate, toDate);
+            //get schedule days/departure time for month
+            MonthScheduleModel monthSchedule = _ryanairService.getScheduleMonth(fromAirport, toAirport, fromDate?.Year.ToString(), fromDate?.Month.ToString());
 
-            return Ok(response);
+            //MonthScheduleModel schedule = new MonthScheduleModel();
+
+            monthSchedule.AirportFrom = route.AirportFrom;
+            monthSchedule.AirportFromName = route.AirportFromName;
+            monthSchedule.AirportTo = route.AirportTo;
+            monthSchedule.AirportToName = route.AirportToName;            
+
+            // get fares for given route for month
+            var pricesJson = _ryanairService.getCheapestPerDay(fromAirport, toAirport, monthSchedule, fromDate);
+
+            _converter.GetPriceModel(pricesJson, monthSchedule);
+
+            return Ok(monthSchedule);
         }
 
         // GET: api/ryanair/routes

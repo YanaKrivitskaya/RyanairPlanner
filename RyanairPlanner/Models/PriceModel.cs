@@ -15,6 +15,6 @@ namespace RyanairPlanner.Models
 
         public string CurrencyCode { get; set; }
 
-        public string CurrencySymbol { get; set; }
+        public string CurrencySymbol { get; set; }        
     }
 }
