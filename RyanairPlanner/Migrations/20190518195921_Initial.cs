@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace RyanairPlanner.Migrations
 {
@@ -12,7 +13,7 @@ namespace RyanairPlanner.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     IataCode = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     SeoName = table.Column<string>(nullable: true),
@@ -35,7 +36,7 @@ namespace RyanairPlanner.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     AirportFrom = table.Column<string>(nullable: true),
                     AirportTo = table.Column<string>(nullable: true),
                     ConnectingAirport = table.Column<string>(nullable: true),
@@ -49,6 +50,21 @@ namespace RyanairPlanner.Migrations
                 {
                     table.PrimaryKey("PK_Routes", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "UpdatesHistory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Name = table.Column<string>(nullable: true),
+                    UpdatedDate = table.Column<DateTime>(nullable: false),
+                    RowsUpdated = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UpdatesHistory", x => x.Id);
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -58,6 +74,9 @@ namespace RyanairPlanner.Migrations
 
             migrationBuilder.DropTable(
                 name: "Routes");
+
+            migrationBuilder.DropTable(
+                name: "UpdatesHistory");
         }
     }
 }

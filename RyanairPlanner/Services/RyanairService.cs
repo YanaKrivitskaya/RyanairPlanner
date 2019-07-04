@@ -13,6 +13,7 @@ namespace RyanairPlanner.Services
         private readonly IConfiguration _config;
         private readonly string apikey;
         private readonly RestRequest request;
+        private readonly CustomConverter converter;
 
         public RyanairService(IConfiguration config)
         {
@@ -20,6 +21,7 @@ namespace RyanairPlanner.Services
             apikey = _config.GetValue<String>("apikey");
             request = new RestRequest(Method.GET);
             request.AddParameter("apikey", apikey);
+            converter = new CustomConverter();
         }
 
         #region CoreAPI
@@ -92,13 +94,15 @@ namespace RyanairPlanner.Services
         #region Timetable API
 
         //Returns list of days with available flights for given route
-        public string getScheduleAvailability(string depIata, string arrivIata)
+        public List<DateTime> getScheduleAvailability(string depIata, string arrivIata)
         {
             var client = new RestClient(String.Format("https://services-api.ryanair.com/timtbl/3/schedules/{0}/{1}/availability", depIata, arrivIata));
 
             IRestResponse response = client.Execute(request);
 
-            var res = response.Content;
+            //var res = response.Content;
+
+            var res = JsonConvert.DeserializeObject<List<DateTime>> (response.Content);
 
             return res;
         }
@@ -128,9 +132,21 @@ namespace RyanairPlanner.Services
         }
 
         //Returns list of flights scheduled for given route, year, month
-        public string getScheduleMonth(string depIata, string arrivIata, string year, string month)
+        public MonthScheduleModel getScheduleMonth(string depIata, string arrivIata, string year, string month)
         {
             var client = new RestClient(String.Format("https://services-api.ryanair.com/timtbl/3/schedules/{0}/{1}/years/{2}/months/{3}", depIata, arrivIata, year, month));
+
+            IRestResponse response = client.Execute(request);
+
+            MonthScheduleModel monthSchedule = converter.GetMonthScheduleModel(response.Content, year);           
+
+            return monthSchedule;
+        }
+
+        //Returns schedule period for given departure airport
+        public string getSchedulePeriodOneWay(string depIata)
+        {
+            var client = new RestClient(String.Format("https://services-api.ryanair.com/timtbl/3/schedules/{0}/periods", depIata));
 
             IRestResponse response = client.Execute(request);
 
@@ -139,10 +155,34 @@ namespace RyanairPlanner.Services
             return res;
         }
 
-        //Returns schedule period for given departure airport
-        public string getSchedulePeriodOneWay(string depIata)
+        #endregion
+
+        #region Farefinder API
+
+        //Returns sorted list (ascending) of one way fares for given filter parameters
+        public OneWayFareModel getCheapest(string depIata, string arrivIata, DateTime? depDate1, DateTime? depDate2)
         {
-            var client = new RestClient(String.Format("https://services-api.ryanair.com/timtbl/3/schedules/{0}/periods", depIata));
+            var client = new RestClient(String.Format("https://services-api.ryanair.com/farfnd/3/oneWayFares", depIata, arrivIata));
+
+            request.AddParameter("departureAirportIataCode", depIata);
+            request.AddParameter("arrivalAirportIataCode", arrivIata);
+            request.AddParameter("outboundDepartureDateFrom", depDate1?.ToString("yyyy-MM-dd"));
+            request.AddParameter("outboundDepartureDateTo", depDate2?.ToString("yyyy-MM-dd"));
+
+            IRestResponse response = client.Execute(request);                               
+
+            OneWayFareModel fareModel = converter.GetFareModel(response.Content);          
+
+            return fareModel;
+        }
+
+        //Returns sorted list (ascending) of one way fares for given filter parameters per day.
+        public string getCheapestPerDay(string depIata, string arrivIata, MonthScheduleModel monthSchedule, DateTime? depDate1)
+        {
+            var client = new RestClient(String.Format("https://services-api.ryanair.com/farfnd/3/oneWayFares/{0}/{1}/cheapestPerDay", depIata, arrivIata));
+
+            //request.AddParameter("outboundWeekOfDate", depDate1.ToString("yyyy-MM-dd"));
+            request.AddParameter("outboundMonthOfDate", depDate1?.ToString("yyyy-MM-dd"));
 
             IRestResponse response = client.Execute(request);
 
