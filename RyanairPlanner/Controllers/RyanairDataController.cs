@@ -25,7 +25,7 @@ namespace RyanairPlanner.Controllers
             _converter = new CustomConverter();
         }
 
-        // GET: api/ryanair/routes/update
+        // GET: api/ryanair/routes/update - !IN USE!
         [HttpGet]
         [Route("routes/update")]
         public async Task<IActionResult> UpdateRoutes()
@@ -36,7 +36,7 @@ namespace RyanairPlanner.Controllers
             return Ok(response);
         }
 
-        // GET: api/ryanair/airports/update
+        // GET: api/ryanair/airports/update - !IN USE!
         [HttpGet]
         [Route("airports/update")]
         public async Task<IActionResult> UpdateAirports()
@@ -47,7 +47,7 @@ namespace RyanairPlanner.Controllers
             return Ok(response);
         }
 
-        // GET: api/ryanair/airports/VNO
+        // GET: api/ryanair/airports/VNO - !IN USE!
         [HttpGet]
         [Route("airports/{fromAirport}")]
         public async Task<IActionResult> GetDirectAirports(string fromAirport)
@@ -57,29 +57,40 @@ namespace RyanairPlanner.Controllers
             return Ok(airports);
         }
 
-        // GET: api/ryanair/routes
+        // GET: api/ryanair/routes - !IN USE!
         [HttpGet]
         [Route("routes/{fromAirport}/{toAirport}/{fromDate}/{toDate}")]
         public IActionResult GetDirectRoutes(string fromAirport, string toAirport, DateTime? fromDate, DateTime? toDate)
-        {          
+        {
             var route =  _ryanairRepository.getDirectRoutes(fromAirport, toAirport);
 
-            //List<DateTime> globalSchedule = _ryanairService.getScheduleAvailability(fromAirport, toAirport);
+            MonthScheduleModel monthSchedule = null;
 
-            //get schedule days/departure time for month
-            MonthScheduleModel monthSchedule = _ryanairService.getScheduleMonth(fromAirport, toAirport, fromDate?.Year.ToString(), fromDate?.Month.ToString());
+            if (route!= null) { 
+                //get schedule days/departure time for month
+                monthSchedule = _ryanairService.getScheduleMonth(fromAirport, toAirport, fromDate?.Year.ToString(), fromDate?.Month.ToString());
 
-            //MonthScheduleModel schedule = new MonthScheduleModel();
+                monthSchedule.AirportFrom = route.AirportFrom;
+                monthSchedule.AirportFromName = route.AirportFromName;
+                monthSchedule.AirportTo = route.AirportTo;
+                monthSchedule.AirportToName = route.AirportToName;
 
-            monthSchedule.AirportFrom = route.AirportFrom;
-            monthSchedule.AirportFromName = route.AirportFromName;
-            monthSchedule.AirportTo = route.AirportTo;
-            monthSchedule.AirportToName = route.AirportToName;            
+                if (monthSchedule.Flights != null)
+                {
+                    // get fares for given route for month
+                    var pricesJson = _ryanairService.getCheapestPerDay(fromAirport, toAirport, monthSchedule, fromDate);
 
-            // get fares for given route for month
-            var pricesJson = _ryanairService.getCheapestPerDay(fromAirport, toAirport, monthSchedule, fromDate);
-
-            _converter.GetPriceModel(pricesJson, monthSchedule);
+                    _converter.GetPriceModel(pricesJson, monthSchedule);
+                }
+                else
+                {
+                    return BadRequest("No flights found for the given route");
+                }
+            }
+            else
+            {
+                return BadRequest("No direct routes found");
+            }
 
             return Ok(monthSchedule);
         }

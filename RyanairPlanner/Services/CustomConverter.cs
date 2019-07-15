@@ -94,7 +94,7 @@ namespace RyanairPlanner.Services
                             Value = fare.price.value,
                             ValueMainUnit = fare.price.valueMainUnit,
                             ValueFractionalUnit = fare.price.valueFractionalUnit,
-                            CurrencyCode = fare.price.currecyCode,
+                            CurrencyCode = fare.price.currencyCode,
                             CurrencySymbol = fare.price.currencySymbol
                         };
                     }                    
